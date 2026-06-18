@@ -13,29 +13,44 @@ function CadastroTarefa ({show, ocultar}){
     const [data, setData] = useState('');
 
    
-    const tarefa = {
-        titulo: titulo,
-        descricao: descricao,
-        prioridade: prioridade,
-        status: status,
-        data: data,
-        projetoId: 0,
-        responsavelId: 0
-    }
 
+    const salvar = async () => {
 
-    const salvar = () =>{
+        const tarefa = {
+            titulo: titulo,
+            descricao: descricao,
+            prioridade: prioridade,
+            status: status,
+            dataExecucao: "2026-06-17",
+            projetoId: 2,
+            responsavelId: 1
+        }
 
-        fetch("https://spring-boot-treina-recife-turma-11-production.up.railway.app/api/v1/public/tarefas", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(tarefa)
-        })
+        try {
+            const response = await fetch(
+                "https://spring-boot-treina-recife-turma-11-production.up.railway.app/api/v1/public/tarefas",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(tarefa)
+                }
+            );
 
-        //alert('chegou')
-    } 
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
+
+            const dados = await response.json();
+            console.log(dados);
+            alert("Cadastro realizado com sucesso!");
+
+        } catch (error) {
+            console.error(error);
+            alert("Erro ao cadastrar tarefa!");
+        }
+    };
 
     return <Modal show={show} onHide={ocultar}>
         <Modal.Header closeButton>
@@ -79,7 +94,7 @@ function CadastroTarefa ({show, ocultar}){
           <Button variant="secondary" onClick={ocultar}>
             Close
           </Button>
-          <Button variant="primary" onClick={salvar}>
+          <Button variant="primary" onClick={salvar}>      
             Salvar
           </Button>
         </Modal.Footer>
